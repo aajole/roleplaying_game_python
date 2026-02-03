@@ -1,99 +1,18 @@
 import pygame
-
+from config import *
+from ui import *
 
 pygame.init()
 
+# Luodaan ikkuna
+WINDOW, CLOCK = create_window()
 
-# Ikkuna ja FPS
-window = pygame.display.set_mode((1200, 800), 0, 0)
-pygame.display.set_caption("Peli")
-clock = pygame.time.Clock()
-FPS = 60
-
+# Ladataan assets
+menu_button_png, menu_button_font, title_font, text_font = load_assets()
 
 # Tilat
 game_state = "main_menu"
 running = True
-
-
-# Värit
-green = (0, 255, 0)
-dark_gray = (50, 50, 50)
-gray = (120, 120, 120)
-black = (0, 0, 0)
-white = (255, 255, 255)
-light_gray = (210, 210, 210)
-red = (170, 0, 0)
-
-
-# Fontit ja kuvat
-menu_button_png = pygame.image.load("buttons/button_background.png").convert_alpha()
-menu_button_font = pygame.font.Font("fonts/MorrisRoman-Black.ttf", 40)
-title_font = pygame.font.Font("fonts/MorrisRoman-Black.ttf", 100)
-text_font = pygame.font.Font("fonts/MorrisRoman-Black.ttf", 20)
-
-class Button:
-    
-    def __init__(self, x, y, text, image, action):
-        
-        self.image = image
-        self.rect = self.image.get_rect(topleft=(x, y))
-
-        self.text = text
-        self.action = action
-
-        self.text_color = light_gray
-        self.buttontext = menu_button_font.render(text, True, light_gray)
-
-    
-    def update(self):
-        
-        # Kursorin ja klikkauksen seuranta
-        mouse_pos = pygame.mouse.get_pos()
-        mouse_pressed = pygame.mouse.get_pressed()[0]
-
-        # Onko hiiri napin päällä
-        if self.rect.collidepoint(mouse_pos):
-            x = mouse_pos[0] - self.rect.x
-            y = mouse_pos[1] - self.rect.y
-            
-            # Tarkistetaan, että hiiri on näkyvän pikselin päällä
-            if self.image.get_at((x, y)).a > 0:
-                self.text_color = gray
-
-                # Hiiri pohjassa napin päällä
-                if mouse_pressed:
-                    self.text_color = red
-
-                    if not getattr(self, "pressed", False):
-                        self.pressed = True
-
-                # Hiiri vapautetaan
-                else:
-                    if getattr(self, "pressed", False):
-                        self.pressed = False
-
-                        if self.action:
-                            self.action()
-
-            # Hiiri pois napin päältä
-            else:
-                self.pressed = False
-                self.text_color = light_gray
-
-        else:
-            self.pressed = False
-            self.text_color = light_gray
-            
-        self.buttontext = menu_button_font.render(self.text, True, self.text_color)
-
-    
-    # Nappien piirto
-    def draw(self):
-        window.blit(self.image, self.rect)
-        window.blit(self.buttontext, 
-                    (self.rect.centerx - self.buttontext.get_width() // 2,
-                    self.rect.centery - self.buttontext.get_height() // 2))
 
 
 # Nappien toiminnot
@@ -123,16 +42,16 @@ def exit_game():
 
 
 # Päävalikko
-button_x = window.get_width() // 2 - menu_button_png.get_width() // 2
+button_x = WINDOW.get_width() // 2 - menu_button_png.get_width() // 2
 main_menu_buttons = [
 Button(button_x, 250, "New Game", menu_button_png, new_game),
 Button(button_x, 350, "Load Game", menu_button_png, load_game),
 Button(button_x, 450, "Map Editor", menu_button_png, map_editor),
 Button(button_x, 550, "Exit", menu_button_png, exit_game)]
 
-menu_title = title_font.render("Joku Peli", True, light_gray)
+menu_title = title_font.render("Joku Peli", True, LIGHT_GRAY)
 menu_title_rect = menu_title.get_rect()
-menu_title_rect.centerx = window.get_width() // 2
+menu_title_rect.centerx = WINDOW.get_width() // 2
 menu_title_rect.y = 100
 
 
@@ -169,37 +88,37 @@ Button(50, 0, "Menu", menu_button_png, main_menu)
 
 # Ikkunoiden piirto
 def draw_main_menu():
-    window.fill(black)
-    window.blit(menu_title, menu_title_rect)
+    WINDOW.fill(BLACK)
+    WINDOW.blit(menu_title, menu_title_rect)
     
     for button in main_menu_buttons:
         button.update()
         button.draw()
 
 def draw_new_game():
-    window.fill(black)
+    WINDOW.fill(BLACK)
 
     for button in new_game_buttons:
         button.update() 
         button.draw()
 
 def draw_load_menu():
-    window.fill(black)
+    WINDOW.fill(BLACK)
 
     for button in load_game_buttons:
         button.update()
         button.draw()
 
 def draw_map_editor():
-    window.fill(black)
+    WINDOW.fill(BLACK)
 
     for button in map_editor_buttons:
         button.update()
         button.draw()
 
 def draw_playing():
-    window.fill(black)
-    pygame.draw.rect(window, gray, (350, 50, 800, 700), width = 2)
+    WINDOW.fill(BLACK)
+    pygame.draw.rect(WINDOW, GRAY, (350, 50, 800, 700), width = 2)
     
     for button in playing_buttons:
         button.update()
@@ -229,7 +148,7 @@ while running:
 
 
     pygame.display.flip()
-    clock.tick(FPS)
+    CLOCK.tick(FPS)
 
 pygame.quit()
 
