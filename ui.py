@@ -3,7 +3,7 @@ from config import *
 
 class Button:
     
-    def __init__(self, x, y, text, image, action):
+    def __init__(self, x, y, text, font, text_color, image, action):
         
         self.image = image
         self.rect = self.image.get_rect(topleft=(x, y))
@@ -11,8 +11,9 @@ class Button:
         self.text = text
         self.action = action
 
-        self.text_color = LIGHT_GRAY
-        self.buttontext = menu_button_font.render(text, True, LIGHT_GRAY)
+        self.font = font
+        self.text_color = text_color
+        self.buttontext = self.font.render(text, True, text_color)
 
     
     def update(self):
@@ -54,7 +55,7 @@ class Button:
             self.pressed = False
             self.text_color = LIGHT_GRAY
             
-        self.buttontext = menu_button_font.render(self.text, True, self.text_color)
+        self.buttontext = self.font.render(self.text, True, self.text_color)
 
     
     # Nappien piirto
@@ -63,3 +64,9 @@ class Button:
         WINDOW.blit(self.buttontext, 
                     (self.rect.centerx - self.buttontext.get_width() // 2,
                     self.rect.centery - self.buttontext.get_height() // 2))
+        
+
+
+
+
+
