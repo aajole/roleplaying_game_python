@@ -22,7 +22,7 @@ class MainMenu:
     def __init__(self, game):
         button_x = WINDOW.get_width() // 2 - menu_button_png.get_width() // 2
         self.game = game
-        self.objects = [
+        self.ui_elements = [
         Button(button_x, 250, "New Game", menu_button_font, LIGHT_GRAY, menu_button_png, self.new_game),
         Button(button_x, 350, "Load Game", menu_button_font, LIGHT_GRAY, menu_button_png, self.load_game),
         Button(button_x, 450, "Map Editor", menu_button_font, LIGHT_GRAY, menu_button_png, self.map_editor),
@@ -43,8 +43,8 @@ class MainMenu:
 
     def update(self):
         
-        for object in self.objects:
-            object.update()
+        for ui_element in self.ui_elements:
+            ui_element.update()
 
     def draw(self):
         menu_title = title_font.render("Game", True, LIGHT_GRAY)
@@ -55,8 +55,8 @@ class MainMenu:
         WINDOW.fill(BLACK)
         WINDOW.blit(menu_title, menu_title_rect)
         
-        for object in self.objects:
-            object.draw()
+        for ui_element in self.ui_elements:
+            ui_element.draw()
 
     
 class NewGame:
@@ -76,8 +76,8 @@ class NewGame:
         self.game.switch_state(MainMenu(self.game))
     
     def update(self):
-        for object in self.ui_elements:
-            object.update()
+        for ui_element in self.ui_elements:
+            ui_element.update()
 
     def draw(self):
         WINDOW.fill(BLACK)
@@ -89,7 +89,7 @@ class NewGame:
 class LoadGame:
     def __init__(self, game):
         self.game = game
-        self.objects = [
+        self.ui_elements = [
         Button(1100 - menu_button_png.get_width(), 650, "Play", menu_button_font, LIGHT_GRAY, menu_button_png, self.playing),
         Button(100, 650, "Back", menu_button_font, LIGHT_GRAY, menu_button_png, self.back)
         ]
@@ -102,20 +102,20 @@ class LoadGame:
 
     def update(self):
         
-        for object in self.objects:
-            object.update()
+        for ui_element in self.ui_elements:
+            ui_element.update()
 
     def draw(self):
         WINDOW.fill(BLACK)
         
-        for object in self.objects:
-            object.draw()
+        for ui_element in self.ui_elements:
+            ui_element.draw()
 
 
 class Playing:
     def __init__(self, game):
         self.game  = game
-        self.objects = [
+        self.ui_elements = [
         Button(50, 0, "Menu", menu_button_font, LIGHT_GRAY, menu_button_png, self.main_menu)
         ]
 
@@ -124,20 +124,20 @@ class Playing:
 
     def update(self):
         
-        for object in self.objects:
-            object.update()
+        for ui_element in self.ui_elements:
+            ui_element.update()
 
     def draw(self):
         WINDOW.fill(BLACK)
         
-        for object in self.objects:
-            object.draw()
+        for ui_element in self.ui_elements:
+            ui_element.draw()
 
 
 class MapEditor:
     def __init__(self, game):
         self.game = game
-        self.objects = [
+        self.ui_elements = [
         Button(100, 650, "Back", menu_button_font, LIGHT_GRAY, menu_button_png, self.back)
         ]
 
@@ -146,14 +146,14 @@ class MapEditor:
 
     def update(self):
         
-        for object in self.objects:
-            object.update()
+        for ui_element in self.ui_elements:
+            ui_element.update()
 
     def draw(self):
         WINDOW.fill(BLACK)
         
-        for object in self.objects:
-            object.draw()
+        for ui_element in self.ui_elements:
+            ui_element.draw()
 
 
 game = GameState()

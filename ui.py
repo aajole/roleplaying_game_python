@@ -1,6 +1,10 @@
 import pygame
 from config import *
 
+
+
+
+
 class Button:
     
     def __init__(self, x, y, text, font, text_color, image, action):
