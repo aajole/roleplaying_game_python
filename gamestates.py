@@ -85,7 +85,6 @@ class MainMenu(GameState):
 class NewGame(GameState):
     def __init__(self, game):
         super().__init__(game)
-        self.game = game
         self.ui_elements = [
         Button(100, 100, "Class 1", menu_button_font, LIGHT_GRAY, menu_button_png, self.main_menu),
         Button(100, 200, "Class 2", menu_button_font, LIGHT_GRAY, menu_button_png, self.main_menu),
@@ -97,7 +96,6 @@ class NewGame(GameState):
 class LoadGame(GameState):
     def __init__(self, game):
         super().__init__(game)
-        self.game = game
         self.ui_elements = [
         Button(1100 - menu_button_png.get_width(), 650, "Play", menu_button_font, LIGHT_GRAY, menu_button_png, self.playing),
         Button(100, 650, "Back", menu_button_font, LIGHT_GRAY, menu_button_png, self.main_menu)
@@ -107,7 +105,6 @@ class LoadGame(GameState):
 class Playing(GameState):
     def __init__(self, game):
         super().__init__(game)
-        self.game  = game
         self.ui_elements = [
         Button(50, 0, "Menu", menu_button_font, LIGHT_GRAY, menu_button_png, self.main_menu)
         ]
@@ -116,7 +113,6 @@ class Playing(GameState):
 class MapEditor(GameState):
     def __init__(self, game):
         super().__init__(game)
-        self.game = game
         self.ui_elements = [
         Button(100, 650, "Back", menu_button_font, LIGHT_GRAY, menu_button_png, self.main_menu)
         ]
