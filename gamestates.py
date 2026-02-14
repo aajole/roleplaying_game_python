@@ -1,18 +1,16 @@
-import pygame
 from config import *
-from ui import Button
+from ui import Button, Text
 
-
+# Tietää tämänhetkisen tilan, piirtää ja päivittää
 class GameManager:
     def __init__(self):
         self.running = True
-        
         self.main_menu = MainMenu(self)
         self.new_game = NewGame(self)
         self.load_game = LoadGame(self)
         self.playing = Playing(self)
         self.map_editor = MapEditor(self)
-
+        
         self.current_state = self.main_menu
 
     def switch_state(self, new_state):
@@ -24,20 +22,24 @@ class GameManager:
     def draw(self):
         self.current_state.draw()
 
-
+# Yleinen pelitilaluokka
 class GameState:
     def __init__(self, game):
         self.game = game
+        self.ui_elements = pygame.sprite.Group()
+        self.centerx = WINDOW.get_width() // 2
+        self.centery = WINDOW.get_height() // 2
     
+    def handle_event(self, event):
+        for element in self.ui_elements:
+            element.handle_event(event)
+
     def update(self):
-        for ui_element in self.ui_elements:
-            ui_element.update()
+        self.ui_elements.update()
 
     def draw(self):
         WINDOW.fill(BLACK)
-        
-        for ui_element in self.ui_elements:
-            ui_element.draw()
+        self.ui_elements.draw(WINDOW)
 
     def main_menu(self):
         self.game.switch_state(self.game.main_menu)
@@ -57,64 +59,55 @@ class GameState:
     def exit_game(self):
         self.game.running = False
 
-
+# Kaikki pelitilat, peritään GameState luokka ja lisätään piirrettävät objektit
 class MainMenu(GameState):
     def __init__(self, game):
         super().__init__(game)
-        self.button_x = WINDOW.get_width() // 2 - menu_button_png.get_width() // 2
-        self.ui_elements = [
-        Button(self.button_x, 250, "New Game", menu_button_font, LIGHT_GRAY, menu_button_png, self.new_game),
-        Button(self.button_x, 350, "Load Game", menu_button_font, LIGHT_GRAY, menu_button_png, self.load_game),
-        Button(self.button_x, 450, "Map Editor", menu_button_font, LIGHT_GRAY, menu_button_png, self.map_editor),
-        Button(self.button_x, 550, "Exit", menu_button_font, LIGHT_GRAY, menu_button_png, self.exit_game)
-        ]
-
-    def draw(self):
-        menu_title = title_font.render("Game", True, LIGHT_GRAY)
-        menu_title_rect = menu_title.get_rect()
-        menu_title_rect.centerx = WINDOW.get_width() // 2
-        menu_title_rect.y = 100
         
-        WINDOW.fill(BLACK)
-        WINDOW.blit(menu_title, menu_title_rect)
-        
-        for ui_element in self.ui_elements:
-            ui_element.draw()
+        self.ui_elements.add(
+            Button(self.centerx, self.centery - 100, 300, 200, "New Game", menu_button_font, LIGHT_GRAY, GRAY, RED, menu_button_png, self.new_game),
+            Button(self.centerx, self.centery, 300, 200, "Load Game", menu_button_font, LIGHT_GRAY, GRAY, RED, menu_button_png, self.load_game),
+            Button(self.centerx, self.centery + 100, 300, 200, "Map Editor", menu_button_font, LIGHT_GRAY, GRAY, RED, menu_button_png, self.map_editor),
+            Button(self.centerx, self.centery + 200, 300, 200, "Exit", menu_button_font, LIGHT_GRAY, GRAY, RED, menu_button_png, self.exit_game),
+            Text(self.centerx, self.centery - 300, "Game", title_font, LIGHT_GRAY)
+        )
 
     
 class NewGame(GameState):
     def __init__(self, game):
         super().__init__(game)
-        self.ui_elements = [
-        Button(100, 100, "Class 1", menu_button_font, LIGHT_GRAY, menu_button_png, self.main_menu),
-        Button(100, 200, "Class 2", menu_button_font, LIGHT_GRAY, menu_button_png, self.main_menu),
-        Button(1100 - menu_button_png.get_width(), 650, "Play", menu_button_font, LIGHT_GRAY, menu_button_png, self.playing),
-        Button(100, 650, "Back", menu_button_font, LIGHT_GRAY, menu_button_png, self.main_menu)
-        ]
+        self.ui_elements.add(
+            Button(200, self.centery + 375, 300, 200, "Back", menu_button_font, LIGHT_GRAY, GRAY, RED, menu_button_png, self.main_menu), 
+            Button(WINDOW.get_width() - 200, self.centery + 375, 300, 200, "Play", menu_button_font, LIGHT_GRAY, GRAY, RED, menu_button_png, self.playing)
+        )
 
 
 class LoadGame(GameState):
     def __init__(self, game):
         super().__init__(game)
-        self.ui_elements = [
-        Button(1100 - menu_button_png.get_width(), 650, "Play", menu_button_font, LIGHT_GRAY, menu_button_png, self.playing),
-        Button(100, 650, "Back", menu_button_font, LIGHT_GRAY, menu_button_png, self.main_menu)
-        ]
+        self.ui_elements.add(
+            Button(200, self.centery + 375, 300, 200, "Back", menu_button_font, LIGHT_GRAY, GRAY, RED, menu_button_png, self.main_menu), 
+            Button(WINDOW.get_width() - 200, self.centery + 375, 300, 200, "Play", menu_button_font, LIGHT_GRAY, GRAY, RED, menu_button_png, self.playing)
+        )
 
 
 class Playing(GameState):
     def __init__(self, game):
         super().__init__(game)
-        self.ui_elements = [
-        Button(50, 0, "Menu", menu_button_font, LIGHT_GRAY, menu_button_png, self.main_menu)
-        ]
+        self.ui_elements.add(
+            Button(200, self.centery + 375, 300, 200, "Back", menu_button_font, LIGHT_GRAY, GRAY, RED, menu_button_png, self.main_menu), 
+            Button(WINDOW.get_width() - 200, self.centery + 375, 300, 200, "Play", menu_button_font, LIGHT_GRAY, GRAY, RED, menu_button_png, self.playing)
+        )
 
 
 class MapEditor(GameState):
     def __init__(self, game):
         super().__init__(game)
-        self.ui_elements = [
-        Button(100, 650, "Back", menu_button_font, LIGHT_GRAY, menu_button_png, self.main_menu)
-        ]
+        self.ui_elements.add(
+            Button(200, self.centery + 375, 300, 200, "Back", menu_button_font, LIGHT_GRAY, GRAY, RED, menu_button_png, self.main_menu), 
+            Button(WINDOW.get_width() - 200, self.centery + 375, 300, 200, "Play", menu_button_font, LIGHT_GRAY, GRAY, RED, menu_button_png, self.playing)
+        )
 
+
+# Luodaan GameManager olio, joka pyörittää eri pelitiloja
 game = GameManager()

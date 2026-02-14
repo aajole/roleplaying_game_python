@@ -2,75 +2,121 @@ import pygame
 from config import *
 
 
-
-
-
-class Button:
-    
-    def __init__(self, x, y, text, font, text_color, image, action):
+# Yleinen UI luokka
+class UIElement(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height, background):
+        super().__init__()
         
-        self.image = image
-        self.rect = self.image.get_rect(topleft=(x, y))
+        self.width = width
+        self.height = height
+        self.image = pygame.Surface((width, height), pygame.SRCALPHA)
+        self.rect = self.image.get_rect(center=(x, y))
+        self.background = background
+        self.visible = True
+        self.enabled = True
+        self._render_background()
+
+    def _render_background(self):
+        self.image.fill((0, 0, 0, 0))
+        
+        if isinstance(self.background, pygame.Surface):
+            background = pygame.transform.scale(self.background, (self.rect.width, self.rect.height))
+            self.image.blit(background, (0, 0))
+        
+        elif isinstance(self.background, tuple):
+            self.image.fill(self.background)
+
+    def set_background(self, background):
+        self.background = background
+        self._render_background()
+
+
+# Nappi keskitetyllä tekstillä
+class Button(UIElement):
+    def __init__(self, x, y, width, height, text, font, default_text_color, hover_text_color, click_text_color, background, action):
+        super().__init__(x, y, width, height, background)
 
         self.text = text
-        self.action = action
-
         self.font = font
-        self.text_color = text_color
-        self.buttontext = self.font.render(text, True, text_color)
+        self.default_text_color = default_text_color
+        self.hover_text_color = hover_text_color
+        self.click_text_color = click_text_color
+        self.text_color = self.default_text_color
 
-    
-    def update(self):
-        
-        # Kursorin ja klikkauksen seuranta
+        self.action = action
+        self.hovered = False
+        self.pressed = False
+        self.mask = pygame.mask.from_surface(self.image)
+
+        self._render_text()
+
+    def _render_text(self):
+        self._render_background()
+
+        text_surface = self.font.render(self.text, True, self.text_color)
+        text_rect = text_surface.get_rect(center=(self.rect.width // 2, self.rect.height // 2))
+        self.image.blit(text_surface, text_rect)
+
+
+    def handle_event(self, event):
         mouse_pos = pygame.mouse.get_pos()
-        mouse_pressed = pygame.mouse.get_pressed()[0]
+        x = mouse_pos[0] - self.rect.x
+        y = mouse_pos[1] - self.rect.y
 
-        # Onko hiiri napin päällä
-        if self.rect.collidepoint(mouse_pos):
-            x = mouse_pos[0] - self.rect.x
-            y = mouse_pos[1] - self.rect.y
-            
-            # Tarkistetaan, että hiiri on näkyvän pikselin päällä
-            if self.image.get_at((x, y)).a > 0:
-                self.text_color = GRAY
-
-                # Hiiri pohjassa napin päällä
-                if mouse_pressed:
-                    self.text_color = RED
-
-                    if not getattr(self, "pressed", False):
-                        self.pressed = True
-
-                # Hiiri vapautetaan
-                else:
-                    if getattr(self, "pressed", False):
-                        self.pressed = False
-
-                        if self.action:
-                            self.action()
-
-            # Hiiri pois napin päältä
-            else:
-                self.pressed = False
-                self.text_color = LIGHT_GRAY
-
-        else:
-            self.pressed = False
-            self.text_color = LIGHT_GRAY
-            
-        self.buttontext = self.font.render(self.text, True, self.text_color)
-
-    
-    # Nappien piirto
-    def draw(self):
-        WINDOW.blit(self.image, self.rect)
-        WINDOW.blit(self.buttontext, 
-                    (self.rect.centerx - self.buttontext.get_width() // 2,
-                    self.rect.centery - self.buttontext.get_height() // 2))
+        if 0 <= x < self.rect.width and 0 <= y < self.rect.height:
+            self.hovered = self.mask.get_at((x, y))
         
+        else:
+            self.hovered = False
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            
+            if event.button == 1 and self.hovered:
+                self.pressed = True
+                self.text_color = self.click_text_color
+
+        elif event.type == pygame.MOUSEBUTTONUP:
+            
+            if event.button == 1 and self.pressed:
+                
+                if self.hovered:
+                    self.action()
+                    self.hovered = False
+
+                self.pressed = False
+
+    def update(self):
+       
+        if not self.pressed:
+            
+            if self.hovered:
+                self.text_color = self.hover_text_color
+            
+            else:
+                self.text_color = self.default_text_color
+
+        self._render_text()
 
 
+class Text(pygame.sprite.Sprite):
+    def __init__(self, x, y, text, font, text_color):
+        super().__init__()
+
+        self.x = x
+        self.y = y
+        self.text = text
+        self.text_color = text_color
+        self.font = font
+        self._render_text()
+
+    def _render_text(self):
+        self.image = self.font.render(self.text, True, self.text_color)
+        self.rect = self.image.get_rect(center=(self.x, self.y))
+        WINDOW.blit(self.image, self.rect)
+
+    def handle_event(self, event):
+        pass
 
 
-
+    def update(self):
+        self._render_text()

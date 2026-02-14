@@ -11,7 +11,7 @@ RED = (170, 0, 0)
 
 # Ikkuna
 FPS = 60
-WINDOW = pygame.display.set_mode((1200, 800), 0, 0)
+WINDOW = pygame.display.set_mode((0, 0)) # pygame.FULLSCREEN
 pygame.display.set_caption("RPG Game")
 CLOCK = pygame.time.Clock()
 
