@@ -1,6 +1,7 @@
 from config import *
 from ui import Button, Text
 
+
 # Tietää tämänhetkisen tilan, piirtää ja päivittää
 class GameManager:
     def __init__(self):
@@ -10,7 +11,6 @@ class GameManager:
         self.load_game = LoadGame(self)
         self.playing = Playing(self)
         self.map_editor = MapEditor(self)
-        
         self.current_state = self.main_menu
 
     def switch_state(self, new_state):
@@ -21,6 +21,7 @@ class GameManager:
         
     def draw(self):
         self.current_state.draw()
+
 
 # Yleinen pelitilaluokka
 class GameState:
@@ -59,6 +60,7 @@ class GameState:
     def exit_game(self):
         self.game.running = False
 
+
 # Kaikki pelitilat, peritään GameState luokka ja lisätään piirrettävät objektit
 class MainMenu(GameState):
     def __init__(self, game):
@@ -76,6 +78,7 @@ class MainMenu(GameState):
 class NewGame(GameState):
     def __init__(self, game):
         super().__init__(game)
+        
         self.ui_elements.add(
             Button(200, self.centery + 375, 300, 200, "Back", menu_button_font, LIGHT_GRAY, GRAY, RED, menu_button_png, self.main_menu), 
             Button(WINDOW.get_width() - 200, self.centery + 375, 300, 200, "Play", menu_button_font, LIGHT_GRAY, GRAY, RED, menu_button_png, self.playing)
@@ -85,6 +88,7 @@ class NewGame(GameState):
 class LoadGame(GameState):
     def __init__(self, game):
         super().__init__(game)
+        
         self.ui_elements.add(
             Button(200, self.centery + 375, 300, 200, "Back", menu_button_font, LIGHT_GRAY, GRAY, RED, menu_button_png, self.main_menu), 
             Button(WINDOW.get_width() - 200, self.centery + 375, 300, 200, "Play", menu_button_font, LIGHT_GRAY, GRAY, RED, menu_button_png, self.playing)
@@ -94,6 +98,7 @@ class LoadGame(GameState):
 class Playing(GameState):
     def __init__(self, game):
         super().__init__(game)
+        
         self.ui_elements.add(
             Button(200, self.centery + 375, 300, 200, "Back", menu_button_font, LIGHT_GRAY, GRAY, RED, menu_button_png, self.main_menu), 
             Button(WINDOW.get_width() - 200, self.centery + 375, 300, 200, "Play", menu_button_font, LIGHT_GRAY, GRAY, RED, menu_button_png, self.playing)
@@ -103,6 +108,7 @@ class Playing(GameState):
 class MapEditor(GameState):
     def __init__(self, game):
         super().__init__(game)
+        
         self.ui_elements.add(
             Button(200, self.centery + 375, 300, 200, "Back", menu_button_font, LIGHT_GRAY, GRAY, RED, menu_button_png, self.main_menu), 
             Button(WINDOW.get_width() - 200, self.centery + 375, 300, 200, "Play", menu_button_font, LIGHT_GRAY, GRAY, RED, menu_button_png, self.playing)

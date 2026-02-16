@@ -6,7 +6,6 @@ from config import *
 class UIElement(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, background):
         super().__init__()
-        
         self.width = width
         self.height = height
         self.image = pygame.Surface((width, height), pygame.SRCALPHA)
@@ -52,7 +51,7 @@ class Button(UIElement):
 
     def _render_text(self):
         self._render_background()
-
+        
         text_surface = self.font.render(self.text, True, self.text_color)
         text_rect = text_surface.get_rect(center=(self.rect.width // 2, self.rect.height // 2))
         self.image.blit(text_surface, text_rect)
@@ -70,38 +69,29 @@ class Button(UIElement):
             self.hovered = False
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            
             if event.button == 1 and self.hovered:
                 self.pressed = True
                 self.text_color = self.click_text_color
 
         elif event.type == pygame.MOUSEBUTTONUP:
-            
             if event.button == 1 and self.pressed:
-                
                 if self.hovered:
                     self.action()
                     self.hovered = False
-
                 self.pressed = False
 
     def update(self):
-       
         if not self.pressed:
-            
             if self.hovered:
                 self.text_color = self.hover_text_color
-            
             else:
                 self.text_color = self.default_text_color
-
         self._render_text()
 
 
 class Text(pygame.sprite.Sprite):
     def __init__(self, x, y, text, font, text_color):
         super().__init__()
-
         self.x = x
         self.y = y
         self.text = text
@@ -116,7 +106,6 @@ class Text(pygame.sprite.Sprite):
 
     def handle_event(self, event):
         pass
-
 
     def update(self):
         self._render_text()
