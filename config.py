@@ -20,3 +20,9 @@ menu_button_png = pygame.image.load("assets/buttons/button_background.png").conv
 menu_button_font = pygame.font.Font("assets/fonts/MorrisRoman-Black.ttf", 40)
 title_font = pygame.font.Font("assets/fonts/MorrisRoman-Black.ttf", 100)
 text_font = pygame.font.Font("assets/fonts/MorrisRoman-Black.ttf", 20)
+
+test_figure = pygame.image.load("assets/images/hobgoblin.png").convert_alpha()
+
+
+# Terrain tileset
+tileset1 = pygame.image.load("assets/tilesets/tileset.bmp").convert()

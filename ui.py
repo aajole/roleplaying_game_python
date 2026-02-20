@@ -1,15 +1,16 @@
 import pygame
 from config import *
 
-
 # Yleinen UI luokka
 class UIElement(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, background):
         super().__init__()
+        self.x = x
+        self.y = y
         self.width = width
         self.height = height
         self.image = pygame.Surface((width, height), pygame.SRCALPHA)
-        self.rect = self.image.get_rect(center=(x, y))
+        self.rect = self.image.get_rect(center=(self.x, self.y))
         self.background = background
         self.visible = True
         self.enabled = True
@@ -18,17 +19,8 @@ class UIElement(pygame.sprite.Sprite):
     def _render_background(self):
         self.image.fill((0, 0, 0, 0))
         
-        if isinstance(self.background, pygame.Surface):
-            background = pygame.transform.scale(self.background, (self.rect.width, self.rect.height))
-            self.image.blit(background, (0, 0))
-        
-        elif isinstance(self.background, tuple):
-            self.image.fill(self.background)
-
-    def set_background(self, background):
-        self.background = background
-        self._render_background()
-
+        background = pygame.transform.scale(self.background, (self.rect.width, self.rect.height))
+        self.image.blit(background, (0, 0))
 
 # Nappi keskitetyllä tekstillä
 class Button(UIElement):

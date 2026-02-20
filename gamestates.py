@@ -1,5 +1,7 @@
 from config import *
-from ui import Button, Text
+from ui import Button, Text, UIElement
+from player import Player
+from map import Map
 
 
 # Tietää tämänhetkisen tilan, piirtää ja päivittää
@@ -11,7 +13,7 @@ class GameManager:
         self.load_game = LoadGame(self)
         self.playing = Playing(self)
         self.map_editor = MapEditor(self)
-        self.current_state = self.main_menu
+        self.current_state = self.playing
 
     def switch_state(self, new_state):
         self.current_state = new_state
@@ -98,12 +100,26 @@ class LoadGame(GameState):
 class Playing(GameState):
     def __init__(self, game):
         super().__init__(game)
-        
-        self.ui_elements.add(
-            Button(200, self.centery + 375, 300, 200, "Back", menu_button_font, LIGHT_GRAY, GRAY, RED, menu_button_png, self.main_menu), 
-            Button(WINDOW.get_width() - 200, self.centery + 375, 300, 200, "Play", menu_button_font, LIGHT_GRAY, GRAY, RED, menu_button_png, self.playing)
-        )
+        self.entities = pygame.sprite.Group()
 
+        self.ui_elements.add(
+            Button(160, self.centery - 475, 300, 200, "Menu", menu_button_font, LIGHT_GRAY, GRAY, RED, menu_button_png, self.main_menu)
+        )
+        self.entities.add(
+            Player(self.centerx, self.centery, 32, 32, test_figure)
+        )
+        self.map = Map("start.map")
+
+    def update(self):
+        self.ui_elements.update()
+        self.entities.update()
+
+    def draw(self):
+        WINDOW.fill(BLACK)
+        self.map.draw(WINDOW)
+        self.entities.draw(WINDOW)
+        self.ui_elements.draw(WINDOW)
+        
 
 class MapEditor(GameState):
     def __init__(self, game):
